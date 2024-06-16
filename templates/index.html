@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        body {
+            font-family: Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .mdc-button {
+            background-color: #673ab7; /* Primary color */
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="mdc-typography--headline2">Food Image Classification</h1>
+    
+    <form method="POST" enctype="multipart/form-data">
+        <div class="mdc-text-field mdc-text-field--outlined" style="width: 300px;">
+            <input class="mdc-text-field__input" type="file" name="file" id="fileInput">
+            <div class="mdc-notched-outline">
+                <div class="mdc-notched-outline__leading"></div>
+                <div class="mdc-notched-outline__notch">
+                    <label for="fileInput" class="mdc-floating-label">Choose Image</label>
+                </div>
+                <div class="mdc-notched-outline__trailing"></div>
+            </div>
+        </div>
+        <br>
+        <button class="mdc-button mdc-button--raised" type="submit">
+            <span class="mdc-button__label">Predict</span>
+        </button>
+    </form>
+
+
+    <script>
+        mdc.textField.MDCTextField.attachTo(document.querySelector('.mdc-text-field'));
+    </script>
+</body>
+</html>
