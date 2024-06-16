@@ -4,3 +4,5 @@ autopep8
 
 # App
 flask
+Pillow
+tensorflow=2.15.0
