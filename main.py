@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, request
+from io import BytesIO
 from werkzeug.utils import secure_filename
 import tensorflow as tf
 from PIL import Image
@@ -15,10 +16,9 @@ model = tf.keras.models.load_model('./trained_classifier.h5')
 class_labels = ['Pizza', 'Burger', 'Sushi', 'Salad', ...]  
 
 # Function to preprocess the uploaded image
-def preprocess_image(image_path):
-    img = Image.open(image_path).resize((224, 224))  # Open and resize the image
-    img_array = np.array(img) 
-     # Preprocess according to your model
+def preprocess_image(img):
+    img_array = np.array(img)
+    # Preprocess according to your model
     img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
     return img_array
 food_categories = [
@@ -141,11 +141,9 @@ def index():
             return "No selected file"
 
         if file:
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
-
-            img_array = preprocess_image(filepath)
+            img_bytes = file.read()  # Read the image data as bytes
+            img = Image.open(BytesIO(img_bytes)).resize((224, 224)) # Open the image directly from bytes
+            img_array = preprocess_image(img)
             predictions = model.predict(img_array)[0]
             top_indices = predictions.argsort()[-5:][::-1]  # Indices of top 5
             top_predictions = [(food_categories[i], predictions[i]) for i in top_indices]  
@@ -162,11 +160,9 @@ def predict():
         return jsonify({"error": "No selected file"}), 400
 
     if file:
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
-
-        img_array = preprocess_image(filepath)
+        img_bytes = file.read()  # Read the image data as bytes
+        img = Image.open(BytesIO(img_bytes)).resize((224, 224)) # Open the image directly from bytes
+        img_array = preprocess_image(img)
         predictions = model.predict(img_array)[0]
         top_indices = predictions.argsort()[-5:][::-1]  # Indices of top 5
         top_predictions = [{"food": food_categories[i], "probability": float(predictions[i])} for i in top_indices]
